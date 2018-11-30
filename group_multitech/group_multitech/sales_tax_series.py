@@ -7,5 +7,5 @@ import erpnext.controllers.taxes_and_totals
 
 @frappe.whitelist(allow_guest=True)
 def sales_tax_series(sales_tax,company):
-	query= frappe.db.sql("SELECT MAX(tax_series) FROM  `tabSales Invoice` WHERE  sales_tax = '"+str(sales_tax)+"' and company = '"+str(company)+"';")
+	query= frappe.db.sql("SELECT MAX(tax_number) FROM  `tabSales Invoice` WHERE  sales_tax = '"+str(sales_tax)+"' and company = '"+str(company)+"';")
 	return query
