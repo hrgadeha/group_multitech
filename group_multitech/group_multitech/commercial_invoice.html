@@ -1,0 +1,99 @@
+<br><br><br><br><br><br><br><br>
+
+
+<table class="table table-bordered">
+	<tr>
+		{% if doc.contact_person %}
+			{%  set contact = frappe.get_doc("Contact", doc.contact_person) %}
+		{% endif %}
+		{% if doc.company %}
+			{%  set company = frappe.get_doc("Company", doc.company) %}
+		{% endif %}
+		{% if doc.customer_address %}
+			{%  set address = frappe.get_doc("Address", doc.customer_address) %}
+		{% endif %}
+	<td colspan = "7" style="width:60%;border-left:0px;border-right:0px"><strong>To, </strong>{{ contact.designation or " " }},{{ contact.department or " " }}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp{{ doc.customer_name or " " }},<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp{{ address.city or " " }}<br><br><strong>Subject :</strong>{{ 
+doc.subject or " " }}<br><strong>Date of Starting : </strong>{{ doc.get_formatted("start_date") or " " }}<br><strong>Date of Completion : </strong>{{ doc.get_formatted("end_date") or " " }}</td>
+	<td colspan = "3" style="width:20%;border-left:0px";text-align: right;"><strong>Invoice No: </strong>{{ doc.name }}<br><strong>N.T.N Reg.No.: </strong>{{ company.tax_id }}</td>
+	</tr>
+	<tr>
+		<th width="1%">Sr</th>
+		<th width="6%">Rate List Item</th>
+		<th width="9%" style="text-align: right;">Item Code</th>
+		<th width="33%">Particulars</th>
+		<th width="6%" >Unit</th>
+		<th width="6%" >Qty</th>
+		<th width="10%" style="text-align: right;">Unit Rate</th>
+		<th width="9%" style="text-align: right;">Total Amount</th>
+		<th width="13%" style="text-align: right;">Less Amount</th>
+		<th width="13%" style="text-align: right;">Net Amount</th>
+	</tr>
+	{% for row in doc.items %}
+	<tr >
+		<td width="1%">{{loop.index}}</td>
+		<td width="33%">{{ row.item_code.split('_')[1] }}</td>
+		<td width="6%">{{ row.item_code.split('_')[0] }}</td>
+		<td width="9%">{{ row.item_group }}{{ row.item_name }}</td>
+		<td width="10%">{{ row.uom }}</td>			
+		<td width="10%" style="text-align: right;">{{ row.qty }}</td>
+		<td width="9%" style="text-align: right;">{{ frappe.format_value(row.rate, {"fieldtype":"Currency"}) }}</td>
+		<td width="13%" style="text-align: right;">{{ frappe.format_value(row.amount, {"fieldtype":"Currency"}) }}</td>
+		<td width="13%" style="text-align: right;">{{ frappe.format_value(row.less_amount, {"fieldtype":"Currency"}) }}</td>
+		<td width="13%" style="text-align: right;">{{ frappe.format_value((row.amount - row.less_amount), {"fieldtype":"Currency"}) }}</td>					
+	</tr>
+	{% endfor %}
+	<tr>
+		<td colspan = "9";><strong>Total Amount : </strong></td>
+		<td colspan = "1";>{{ frappe.format_value((doc.total - doc.discount_amount), {"fieldtype":"Currency"}) }}</td>		
+	</tr>
+		{% if doc.taxes_and_charges == "GST - ME"%}
+		{%  set tax = 17 %}
+		{% else %}
+		{%  set tax = 13 %}
+		{% endif %}
+	<tr>
+		<td colspan = "9";><strong>Add {{ tax }} % SST : </strong></td>
+		<td colspan = "1";>{{ frappe.format_value(((tax/100) * (doc.total - doc.discount_amount)), {"fieldtype":"Currency"}) }}</td>		
+	</tr>
+	<tr>
+		<td colspan = "9";><strong>Total Amount With SST : </strong></td>
+		<td colspan = "1";>{{ frappe.format_value((((tax/100) * (doc.total - doc.discount_amount)) +(doc.total - doc.discount_amount)), {"fieldtype":"Currency"}) }}</td>		
+	</tr>
+	<tr>
+		<td colspan = "10";><strong>In Words : </strong>{{ frappe.utils.money_in_words((((tax/100) * (doc.total - doc.discount_amount)) +(doc.total - doc.discount_amount))) }}</td>		
+	</tr>
+		{% if doc.signature_1 %}
+			{%  set signature_1 = frappe.get_doc("Employee", doc.signature_1) %}
+		{% endif %}
+		{% if doc.signature_2 %}
+			{%  set signature_2 = frappe.get_doc("Employee", doc.signature_2) %}
+		{% endif %}
+		{% if doc.signature_3 %}
+			{%  set signature_3 = frappe.get_doc("Employee", doc.signature_3) %}
+		{% endif %}
+	<tr>
+		{% if doc.signature_1 %}
+		{%  set signature_1 = frappe.get_doc("Employee", doc.signature_1) %}
+			<td colspan = "3" style="width:60%;text-align: center;border-left:0px;border-right:0px"><br><br><br><br><br><strong>{{ signature_1.employee_name or " " }}</strong><br>
+{{ signature_1.designation or " " }}</td>
+		{% else %}
+			<td colspan = "3" style="width:60%;text-align: center;border-left:0px;border-right:0px"></strong></td>
+		{% endif %}
+
+		{% if doc.signature_2 %}
+			{%  set signature_2 = frappe.get_doc("Employee", doc.signature_2) %}
+		<td colspan = "4" style="width:60%;text-align: center;border-left:0px;border-right:0px"><br><br><br><br><br><strong>{{ signature_2.employee_name or " " }}</strong><br>
+{{ signature_2.designation or " " }}</td>
+		{% else %}
+			<td colspan = "4" style="width:60%;text-align: center;border-left:0px;border-right:0px"></strong></td>
+		{% endif %}
+
+		{% if doc.signature_3 %}
+			{%  set signature_3 = frappe.get_doc("Employee", doc.signature_3) %}
+		<td colspan = "3" style="width:60%;text-align: center;border-left:0px;border-right:0px"><br><br><br><br><br><strong>{{ signature_3.employee_name or " " }}</strong><br>
+{{ signature_3.designation or " " }}</td>
+		{% else %}
+			<td colspan = "3" style="width:60%;text-align: center;border-left:0px;border-right:0px"></strong></td>
+		{% endif %}
+	</tr>
+</table>
