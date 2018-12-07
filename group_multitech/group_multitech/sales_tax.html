@@ -1,7 +1,5 @@
 <br><br><br><br><br><br><br><br><br><br>
-<table class="table table-bordered">
-	<tr>
-		{% if doc.customer %}
+{% if doc.customer %}
 			{%  set customer = frappe.get_doc("Customer", doc.customer) %}
 		{% endif %}
 		{% if doc.company %}
@@ -13,36 +11,58 @@
 		{% if doc.company_address %}
 			{%  set company_address = frappe.get_doc("Address", doc.company_address) %}
 		{% endif %}
-	<td colspan = "5" style="width:60%;border-left:0px;border-right:0px"><strong>Invoice No : </strong>{{ doc.sales_tax or " " }} - {{ doc.tax_number or " " }}<br><br><strong>Supplier's Name : </strong>M/S {{ doc.company }}<br><br><strong>Address : </strong>{{ company_address.address_line1 }}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ company_address.address_line2 }}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ company_address.city }}<br><br><strong>Telephone No : </strong>{{ company_address.phone or " " }}<br><strong>ST Reg.No. : </strong>S{{ company.tax_id }}<br><strong>N.T.N Reg.No. : </strong>{{ company.tax_id }}</td>
-	<td colspan = "5" style="width:60%;border-left:0px;border-right:0px"><strong>Date : </strong>{{ doc.get_formatted("invoice_date") or " " }}<br><br><strong>Customer : </strong>M/S {{ doc.customer_name }}<br><br><strong>Address : </strong>{{ address.address_line1 }}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ address.address_line2 }},{{ address.city }}<br><br><strong>GST : </strong>{{ customer.gst_number or " " }}<br><strong>N.T.N Reg.No. : </strong>{{ customer.tax_id or " "}}</td>
+<table class="table table-bordered">
+	<tr>
+		<td width="17%" style="border: 0px;"><strong>Serial No : </strong></td>
+		<td width="43%" style="border: 0px; text-align: left;">{{ doc.sales_tax or " " }} - {{ doc.tax_number or " " }}</td>
+		<td width="15%" style="border: 0px; text-align: right;"><strong>Date : </strong></td>
+		<td width="25%" style="border: 0px; text-align: left;">{{ doc.get_formatted("sales_tax_invoice_date") or " " }}</td>
 	</tr>
 	<tr>
-		<th width="1%">Sr</th>
-		<th width="6%" style="text-align: right;">Qty</th>
-		<th width="6%" style="text-align: right;">Unit</th>
-		<th width="30%" style="text-align: right;">Description Of Goods</th>	
-		<th width="10%" style="text-align: right;">Unit Price</th>
-		<th width="9%" style="text-align: right;">Value Excluding Sales Tax</th>
-		<th width="13%" style="text-align: right;">Rate of Sales Tax</th>
-		<th width="13%" style="text-align: right;">Total Sales Tax Payable</th>
-		<th width="13%" style="text-align: right;">Value including Sales Tax</th>
+		<td width="17%" style="border: 0px;"><strong>Supplier's Name : </strong></td>
+		<td width="43%" style="border: 0px; text-align: left;">M/S {{ doc.company }}</td>
+		<td width="15%" style="border: 0px; text-align: right;"><strong>Customer : </strong></td>
+		<td width="25%" style="border: 0px; text-align: left;">M/S {{ doc.customer_name }}</td>
+	</tr>
+	<tr>
+		<td width="17%" style="border: 0px;"><strong>Address : </strong></td>
+		<td width="43%" style="border: 0px; text-align: left;">{{ company_address.address_line1 }}<br>{{ company_address.address_line2 }}<br>{{ company_address.city }}</td>
+		<td width="15%" style="border: 0px; text-align: right;"><strong>Address : </strong></td>
+		<td width="25%" style="border: 0px; text-align: left;">{{ address.address_line1 }}<br>{{ address.address_line2 }},{{ address.city }}</td>
+	</tr>
+	<tr>
+		<td width="17%" style="border: 0px;"><strong>Telephone No : <br>ST Reg. No :<br>NTN  No :</strong></td>
+		<td width="43%" style="border: 0px; text-align: left;">{{ company_address.phone or " " }}<br>S{{ company.tax_id }}<br>{{ company.tax_id }}</td>
+		<td width="15%" style="border: 0px; text-align: right;"><strong>GST : </strong><br><strong>NTN No : </strong></td>
+		<td width="25%" style="border: 0px; text-align: left;">{{ customer.gst_number or " " }}<br>{{ customer.tax_id or " "}}</td>
+	</tr>
+</table>
+<table class="table table-bordered">
+	<tr>
+		<td width="6%" style="text-align: center;">Qty</td>
+		<td width="6%" style="text-align: center;">Unit</td>
+		<td width="38%" style="text-align: center;">Description Of Goods</td>	
+		<td width="8%" style="text-align: center;">Unit Price</td>
+		<td width="11%" style="text-align: center;">Value Excluding Sales Tax</td>
+		<td width="11%" style="text-align: center;">Rate of Sales Tax</td>
+		<td width="11%" style="text-align: center;">Total Sales Tax Payable</td>
+		<td width="11%" style="text-align: center;">Value including Sales Tax</td>
 	</tr>
 	{% for row in doc.items %}
 	<tr >
-		<td width="1%">{{loop.index}}</td>
-		<td width="10%" style="text-align: right;">{{ row.qty }}</td>
-		<td width="10%" style="text-align: right;">{{ row.uom }}</td>
-		<td width="9%">{{ row.item_group }}{{ row.item_name }}</td>
-		<td width="9%" style="text-align: right;">{{ frappe.format_value(row.rate, {"fieldtype":"Currency"}) }}</td>
-		<td width="13%" style="text-align: right;">{{ frappe.format_value(row.amount, {"fieldtype":"Currency"}) }}</td>
+		<td width="6%" style="text-align: right;">{{ row.qty|round|int }}</td>
+		<td width="6%" style="text-align: right;">{{ row.uom }}</td>
+		<td width="38%">{{ row.item_group }}{{ row.item_name }}</td>
+		<td width="8%" style="text-align: right;">{{ frappe.format_value(row.rate, {"fieldtype":"Currency"}) }}</td>
+		<td width="11%" style="text-align: right;">{{ frappe.format_value(row.amount, {"fieldtype":"Currency"}) }}</td>
 		{% if doc.taxes_and_charges == "GST - ME"%}
 		{%  set tax = 17 %}
 		{% else %}
 		{%  set tax = 13 %}
 		{% endif %}
-		<td width="10%" style="text-align: right;">{{ tax }} %</td>
-		<td width="13%" style="text-align: right;">{{ frappe.format_value((row.amount*(tax/100)), {"fieldtype":"Currency"}) }}</td>
-		<td width="13%" style="text-align: right;">{{ frappe.format_value((row.net_amount + (row.amount*(tax/100))), {"fieldtype":"Currency"}) }}</td>						
+		<td width="11%" style="text-align: right;">{{ tax }} %</td>
+		<td width="11%" style="text-align: right;">{{ frappe.format_value((row.amount*(tax/100)), {"fieldtype":"Currency"}) }}</td>
+		<td width="11%" style="text-align: right;">{{ frappe.format_value((row.net_amount + (row.amount*(tax/100))), {"fieldtype":"Currency"}) }}</td>						
 	</tr>
 	{% endfor %}
 		{% if doc.taxes_and_charges == "GST - ME"%}
@@ -51,14 +71,13 @@
 		{%  set tax = 13 %}
 		{% endif %}
 	<tr>
-		<th colspan = "1";></td>
-		<th colspan = "1";></td>
-		<th colspan = "1";></td>
-		<th colspan = "1";><strong>Total Amount : </strong></td>
-		<th colspan = "1";></td>
-		<th colspan = "1"; style="text-align: right;">{{ frappe.format_value(doc.total, {"fieldtype":"Currency"}) }}</td>
-		<th colspan = "1"; style="text-align: right;">{{ tax }} %</td>
-		<th colspan = "1"; style="text-align: right;">{{ frappe.format_value((doc.total*(tax/100)), {"fieldtype":"Currency"}) }}</td>
-		<th colspan = "1"; style="text-align: right;">{{ frappe.format_value(((doc.total + (doc.total*(tax/100)))), {"fieldtype":"Currency"}) }}</td>		
+		<td colspan = "1";></td>
+		<td colspan = "1";></td>
+		<td colspan = "1";><strong>Total Amount : </strong></td>
+		<td colspan = "1";></td>
+		<td colspan = "1"; style="text-align: right;">{{ frappe.format_value(doc.total, {"fieldtype":"Currency"}) }}</td>
+		<td colspan = "1"; style="text-align: right;">{{ tax }} %</td>
+		<td colspan = "1"; style="text-align: right;">{{ frappe.format_value((doc.total*(tax/100)), {"fieldtype":"Currency"}) }}</td>
+		<td colspan = "1"; style="text-align: right;">{{ frappe.format_value(((doc.total + (doc.total*(tax/100)))), {"fieldtype":"Currency"}) }}</td>		
 	</tr>
 </table>

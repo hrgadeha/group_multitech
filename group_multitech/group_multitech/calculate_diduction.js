@@ -1,4 +1,5 @@
 cur_frm.add_fetch("item_code","cost_of_one_inch_of_excavation","cost_of_one_inch_of_excavation")
+cur_frm.add_fetch("item_code","deduction_formula","deduction_formula")
 
 frappe.ui.form.on("Sales Invoice Item", "cost_of_one_inch_of_excavation", function(frm, cdt, cdn){
 	var d = locals[cdt][cdn];
