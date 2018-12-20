@@ -81,7 +81,7 @@ app_license = "MIT"
 
 #doc_events = {
 # 	"Sales Invoice": {
-#		"on_submit": "group_multitech.group_multitech.sales_tax_series.sales_tax_series"
+#		"after_save": "group_multitech.group_multitech.sales_tax_series.popup"
 #	}
 #}
 
