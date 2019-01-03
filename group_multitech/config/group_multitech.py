@@ -38,4 +38,13 @@ def get_data():
 				}
 			]
 		},
+		{
+			"label": _("Warranty"),
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Warranty Certificate"
+				}
+			]
+		}
 	]
