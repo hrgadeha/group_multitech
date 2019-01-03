@@ -16,7 +16,7 @@ frappe.ui.form.on("Warranty Certificate", "onload", function(frm) {
 });
 
 frappe.ui.form.on("Warranty Certificate", {
-  sales_order: function(frm) {
+  gate_data: function(frm) {
 	cur_frm.refresh();
 	cur_frm.clear_table("warranty_certificate_table");
 	cur_frm.refresh_fields();
